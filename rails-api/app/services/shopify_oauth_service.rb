@@ -1,3 +1,7 @@
+require 'net/http'
+require 'json'
+require 'uri'
+
 class ShopifyOauthService
     def initialize(shop_name:, code:)
       @shop_name = shop_name

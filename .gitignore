@@ -1,0 +1,44 @@
+# Environment variables
+.env
+.env.local
+
+# Rails
+rails-api/log/*
+rails-api/tmp/*
+rails-api/.bundle
+rails-api/vendor/bundle
+rails-api/node_modules
+rails-api/public/assets
+rails-api/public/packs
+rails-api/public/packs-test
+rails-api/storage/*
+rails-api/.byebug_history
+rails-api/config/master.key
+
+# Python
+python-ai-service/__pycache__/
+python-ai-service/*.py[cod]
+python-ai-service/*$py.class
+python-ai-service/*.so
+python-ai-service/.Python
+python-ai-service/venv/
+python-ai-service/env/
+python-ai-service/.venv
+python-ai-service/*.egg-info/
+python-ai-service/dist/
+python-ai-service/build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+

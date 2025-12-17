@@ -1,3 +1,8 @@
+require 'net/http'
+require 'json'
+require 'uri'
+require 'securerandom'
+
 module Api
     module V1
       class ShopifyAuthController < BaseController

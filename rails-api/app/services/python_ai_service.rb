@@ -1,5 +1,6 @@
 require 'net/http'
 require 'json'
+require 'uri'
 
 class PythonAiService
   PYTHON_AI_SERVICE_URL = ENV.fetch("PYTHON_AI_SERVICE_URL", "http://localhost:8000/api/v1/questions")
