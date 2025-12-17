@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  rails-api:
+    build: ./rails-api
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - python-ai-service
+
+  python-ai-service:
+    build: ./python-ai-service
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ai_shopify_db
+    ports:
+      - "5432:5432"
