@@ -4,18 +4,15 @@
 #
 # This file is the source Rails uses to define your schema when running `bin/rails
 # db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
-# be faster and is potentially less error prone than running all of your migrations
-# from scratch. Old migrations may fail to apply correctly if those migrations use a
-# dependent application code.
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2024_01_01_000003) do
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "question_logs", force: :cascade do |t|
-    t.bigint "store_id", null: false
+    t.integer "store_id", null: false
     t.text "question", null: false
     t.text "response", null: false
     t.string "confidence"
@@ -26,7 +23,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_01_000003) do
   end
 
   create_table "shopify_tokens", force: :cascade do |t|
-    t.bigint "store_id", null: false
+    t.integer "store_id", null: false
     t.text "access_token", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -45,4 +42,3 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_01_000003) do
   add_foreign_key "question_logs", "stores"
   add_foreign_key "shopify_tokens", "stores"
 end
-

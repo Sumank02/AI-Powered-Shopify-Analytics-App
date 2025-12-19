@@ -10,9 +10,13 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 
 pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 
-workers ENV.fetch("WEB_CONCURRENCY") { 2 }
-
-preload_app!
-
-plugin :tmp_restart
+# Windows doesn't support worker mode - use single process
+if Gem.win_platform?
+  workers 0
+  # Don't use tmp_restart plugin on Windows (causes path issues)
+else
+  workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+  preload_app!
+  plugin :tmp_restart
+end
 

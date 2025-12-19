@@ -15,12 +15,36 @@
 
 Create a `.env` file in the root directory:
 
+**Git Bash / Mac / Linux:**
 ```bash
-# Copy from example (if .env.example exists)
-cp .env.example .env
+# Create new .env file
+touch .env
+
+# Or create and edit in one step
+cat > .env << 'EOF'
+RAILS_ENV=development
+DATABASE_USER=user
+DATABASE_PASSWORD=password
+DATABASE_HOST=localhost
+DATABASE_NAME=ai_shopify_db_development
+
+SHOPIFY_API_KEY=your_shopify_api_key
+SHOPIFY_API_SECRET=your_shopify_api_secret
+SHOPIFY_REDIRECT_URI=http://localhost:3000/api/v1/shopify/callback
+
+PYTHON_AI_SERVICE_URL=http://localhost:8000/api/v1/questions
+
+OPENAI_API_KEY=your_openai_api_key
+EOF
 ```
 
-Or create `.env` manually with:
+**Windows PowerShell:**
+```powershell
+# Create new .env file
+New-Item -Path .env -ItemType File
+```
+
+**Or create `.env` manually** by creating a new file named `.env` with the following content:
 
 ```env
 # Rails API
@@ -44,20 +68,49 @@ OPENAI_API_KEY=your_openai_api_key
 
 ### Step 2: Setup PostgreSQL Database
 
-**Windows:**
-```powershell
-# Install PostgreSQL or use Docker
+**Option A: Using Docker (Recommended if Docker is installed)**
+
+First, check if Docker is installed:
+```bash
+docker --version
+```
+
+If Docker is installed, run:
+```bash
+# Windows PowerShell / Git Bash / Mac / Linux
 docker run -d --name postgres -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=ai_shopify_db_development -p 5432:5432 postgres:15
 ```
 
-**Mac/Linux:**
-```bash
-# Using Docker
-docker run -d --name postgres -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=ai_shopify_db_development -p 5432:5432 postgres:15
+**Option B: Install PostgreSQL Locally (If Docker is not available)**
 
-# Or install PostgreSQL locally and create database
+**Windows:**
+1. Download PostgreSQL from https://www.postgresql.org/download/windows/
+2. Install PostgreSQL (remember the password you set)
+3. Open pgAdmin or use psql command line
+4. Create database: `CREATE DATABASE ai_shopify_db_development;`
+5. Update `.env` file with your PostgreSQL credentials:
+   ```env
+   DATABASE_USER=postgres  # or your PostgreSQL username
+   DATABASE_PASSWORD=your_postgres_password
+   DATABASE_HOST=localhost
+   ```
+
+**Mac (using Homebrew):**
+```bash
+brew install postgresql@15
+brew services start postgresql@15
 createdb ai_shopify_db_development
 ```
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+sudo -u postgres createdb ai_shopify_db_development
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'password';"
+```
+
+**Note:** If you install PostgreSQL locally, make sure to update your `.env` file with the correct `DATABASE_USER` and `DATABASE_PASSWORD`.
 
 ### Step 3: Setup Rails API
 
@@ -108,6 +161,19 @@ uvicorn app.main:app --reload --port 8000
 ---
 
 ## Option 2: Docker Compose Setup (Recommended)
+
+**Prerequisites:** Docker and Docker Compose must be installed.
+
+Check if Docker is installed:
+```bash
+docker --version
+docker-compose --version
+```
+
+If not installed:
+- **Windows:** Download Docker Desktop from https://www.docker.com/products/docker-desktop/
+- **Mac:** `brew install --cask docker` or download from Docker website
+- **Linux:** Follow Docker installation guide for your distribution
 
 ### Step 1: Create .env file
 
