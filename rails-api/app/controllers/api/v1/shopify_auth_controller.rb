@@ -16,10 +16,20 @@ module Api
           if shop.blank?
             render json: { error: "Missing shop parameter" }, status: 400 and return
           end
+
+          # Check if Shopify API credentials are configured
+          if SHOPIFY_API_KEY.blank? || SHOPIFY_API_SECRET.blank?
+            render json: { 
+              error: "Shopify OAuth not configured", 
+              message: "Please add SHOPIFY_API_KEY and SHOPIFY_API_SECRET to your .env file",
+              demo_mode: true,
+              shop: shop
+            }, status: 200 and return
+          end
   
           install_url = "https://#{shop}/admin/oauth/authorize?client_id=#{SHOPIFY_API_KEY}&scope=#{SCOPES}&redirect_uri=#{REDIRECT_URI}&state=#{csrf_token}&grant_options[]=per-user"
   
-          redirect_to install_url
+          redirect_to install_url, allow_other_host: true
         end
   
         def callback
@@ -32,7 +42,8 @@ module Api
   
           token_response = request_access_token(shop, code)
           # In production, save token securely in DB
-          render json: { store: shop, access_token: token_response["access_token"] }
+          # Redirect back to frontend with success message
+          redirect_to "/?shop=#{shop}&code=#{code}&connected=true", allow_other_host: false
         rescue StandardError => e
           render json: { error: "OAuth failed", details: e.message }, status: 500
         end

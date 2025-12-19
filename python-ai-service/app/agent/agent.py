@@ -21,7 +21,7 @@ class AnalyticsAgent:
         self.explainer = ResultExplainer()
         self.shopify_client = ShopifyClient()
 
-    def handle_question(self, store_id: str, question: str) -> dict:
+    def handle_question(self, store_id: str, question: str, access_token: str = None) -> dict:
         """
         Main entry point for handling a natural language question.
         """
@@ -47,10 +47,11 @@ class AnalyticsAgent:
         # 4️⃣ Validate query
         self.validator.validate(shopifyql)
 
-        # 5️⃣ Execute query against Shopify
+        # 5️⃣ Execute query against Shopify via GraphQL Admin API
         raw_data = self.shopify_client.execute_shopifyql(
             store_id=store_id,
-            query=shopifyql
+            query=shopifyql,
+            access_token=access_token
         )
 
         # 6️⃣ Explain results in business language

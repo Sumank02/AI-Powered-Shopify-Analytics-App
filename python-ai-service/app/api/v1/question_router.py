@@ -22,7 +22,8 @@ async def ask_question(payload: QuestionRequest):
     try:
         result = agent.handle_question(
             store_id=payload.store_id,
-            question=payload.question
+            question=payload.question,
+            access_token=payload.access_token
         )
 
         return QuestionResponse(

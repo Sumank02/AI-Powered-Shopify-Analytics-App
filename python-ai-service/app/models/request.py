@@ -17,3 +17,9 @@ class QuestionRequest(BaseModel):
         example="How much inventory should I reorder for next week?",
         description="Natural language analytics question"
     )
+
+    access_token: str = Field(
+        None,
+        example="shpat_xxxxxxxxxxxxxxxxxxxxx",
+        description="Shopify access token (optional - uses demo mode if not provided)"
+    )

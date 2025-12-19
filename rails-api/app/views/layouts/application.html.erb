@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-Powered Shopify Analytics</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      color: #666;
+      font-size: 1.1em;
+    }
+
+    .main-content {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .auth-section {
+      margin-bottom: 40px;
+      padding: 30px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      border: 2px dashed #dee2e6;
+    }
+
+    .auth-section.connected {
+      border-color: #28a745;
+      background: #d4edda;
+    }
+
+    .btn {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+
+    .question-section {
+      margin-bottom: 30px;
+    }
+
+    .question-section h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 1.8em;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      font-size: 1em;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .btn-submit {
+      background: #28a745;
+      color: white;
+      width: 100%;
+      padding: 15px;
+      font-size: 1.1em;
+    }
+
+    .btn-submit:hover {
+      background: #218838;
+    }
+
+    .btn-submit:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .result-section {
+      margin-top: 30px;
+      padding: 25px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .result-section.show {
+      display: block;
+    }
+
+    .result-section h3 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.5em;
+    }
+
+    .answer-box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border-left: 4px solid #667eea;
+    }
+
+    .confidence-badge {
+      display: inline-block;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .confidence-high {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .confidence-medium {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .confidence-low {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .metadata {
+      margin-top: 15px;
+      padding: 15px;
+      background: #e9ecef;
+      border-radius: 8px;
+      font-size: 0.9em;
+    }
+
+    .metadata summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .example-questions {
+      margin-top: 20px;
+      padding: 20px;
+      background: #e7f3ff;
+      border-radius: 8px;
+    }
+
+    .example-questions h4 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .example-btn {
+      display: inline-block;
+      margin: 5px;
+      padding: 8px 15px;
+      background: white;
+      border: 1px solid #667eea;
+      color: #667eea;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .example-btn:hover {
+      background: #667eea;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🤖 AI-Powered Shopify Analytics</h1>
+      <p>Ask natural language questions about your store's inventory, sales, and customers</p>
+    </div>
+
+    <div class="main-content">
+      <!-- Shopify OAuth Section -->
+      <div class="auth-section" id="authSection">
+        <h2>🔐 Connect Your Shopify Store (Optional)</h2>
+        <p style="margin-bottom: 15px;">
+          <strong>For Demo:</strong> You can skip OAuth and test with any store name. The system uses mocked data for demonstration.
+        </p>
+        <p style="margin-bottom: 15px; color: #856404; background: #fff3cd; padding: 10px; border-radius: 5px;">
+          <strong>⚠️ Note:</strong> To use real Shopify OAuth, you need to:
+          <br>1. Create a Shopify Partner account at <a href="https://partners.shopify.com" target="_blank">partners.shopify.com</a>
+          <br>2. Create an app and get API credentials
+          <br>3. Add them to your `.env` file
+        </p>
+        <div>
+          <input type="text" id="shopName" placeholder="your-store.myshopify.com" style="width: 300px; margin-right: 10px;">
+          <button class="btn btn-primary" onclick="connectShopify()">Connect Store</button>
+          <button class="btn btn-success" onclick="skipOAuth()" style="margin-left: 10px;">Skip & Use Demo Mode</button>
+        </div>
+        <div id="authStatus" style="margin-top: 15px;"></div>
+      </div>
+
+      <!-- Question Form Section -->
+      <div class="question-section">
+        <h2>💬 Ask a Question</h2>
+        <form id="questionForm" onsubmit="askQuestion(event)">
+          <div class="form-group">
+            <label for="storeId">Store Domain:</label>
+            <input type="text" id="storeId" placeholder="example-store.myshopify.com" required>
+          </div>
+          <div class="form-group">
+            <label for="question">Your Question:</label>
+            <textarea id="question" placeholder="e.g., What are my top selling products?" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-submit" id="submitBtn">Get Answer</button>
+        </form>
+
+        <div class="example-questions">
+          <h4>💡 Example Questions:</h4>
+          <button class="example-btn" onclick="fillExample('What are my top 5 selling products?')">Top 5 Products</button>
+          <button class="example-btn" onclick="fillExample('How much inventory should I reorder for next week?')">Inventory Reorder</button>
+          <button class="example-btn" onclick="fillExample('Which products are likely to go out of stock in 7 days?')">Out of Stock Risk</button>
+          <button class="example-btn" onclick="fillExample('Which customers placed repeat orders in the last 90 days?')">Repeat Customers</button>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="result-section" id="resultSection">
+        <h3>📊 Answer</h3>
+        <div id="answerContent"></div>
+      </div>
+
+      <div id="errorMessage" class="error" style="display: none;"></div>
+    </div>
+  </div>
+
+  <script>
+    let connectedStore = null;
+
+    function fillExample(question) {
+      document.getElementById('question').value = question;
+    }
+
+    async function connectShopify() {
+      const shopName = document.getElementById('shopName').value.trim();
+      if (!shopName) {
+        alert('Please enter your Shopify store name');
+        return;
+      }
+
+      // Check if API key is configured
+      try {
+        const response = await fetch('/api/v1/shopify/auth?shop=' + shopName);
+        if (response.redirected) {
+          // OAuth is configured, redirect
+          window.location.href = response.url;
+        } else {
+          // OAuth not configured, show message
+          document.getElementById('authStatus').innerHTML = `
+            <p style="color: #856404; background: #fff3cd; padding: 10px; border-radius: 5px;">
+              ⚠️ Shopify OAuth not configured. Using demo mode instead.
+              <br>Store name saved: <strong>${shopName}</strong>
+            </p>
+          `;
+          document.getElementById('storeId').value = shopName;
+        }
+      } catch (error) {
+        // If OAuth fails, just use demo mode
+        document.getElementById('authStatus').innerHTML = `
+          <p style="color: #856404; background: #fff3cd; padding: 10px; border-radius: 5px;">
+            ⚠️ Using demo mode. Store name: <strong>${shopName}</strong>
+          </p>
+        `;
+        document.getElementById('storeId').value = shopName;
+      }
+    }
+
+    function skipOAuth() {
+      const shopName = document.getElementById('shopName').value.trim() || 'example-store.myshopify.com';
+      document.getElementById('storeId').value = shopName;
+      document.getElementById('authStatus').innerHTML = `
+        <p style="color: #155724; background: #d4edda; padding: 10px; border-radius: 5px;">
+          ✅ Demo mode active. You can now ask questions!
+          <br>Store: <strong>${shopName}</strong>
+        </p>
+      `;
+      document.getElementById('authSection').classList.add('connected');
+    }
+
+    async function askQuestion(event) {
+      event.preventDefault();
+      
+      const storeId = document.getElementById('storeId').value.trim();
+      const question = document.getElementById('question').value.trim();
+
+      if (!storeId || !question) {
+        showError('Please fill in both store ID and question');
+        return;
+      }
+
+      // Show loading state
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing...';
+      
+      const resultSection = document.getElementById('resultSection');
+      const errorMessage = document.getElementById('errorMessage');
+      resultSection.classList.remove('show');
+      errorMessage.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/v1/questions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            store_id: storeId,
+            question: question
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && !data.error) {
+          displayResult(data);
+        } else {
+          showError(data.error || data.details || 'Failed to get answer');
+        }
+      } catch (error) {
+        showError('Network error: ' + error.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Get Answer';
+      }
+    }
+
+    function displayResult(data) {
+      const resultSection = document.getElementById('resultSection');
+      const answerContent = document.getElementById('answerContent');
+
+      const confidenceClass = `confidence-${data.confidence || 'medium'}`;
+      
+      answerContent.innerHTML = `
+        <div class="answer-box">
+          <p style="font-size: 1.1em; line-height: 1.6;">${data.answer || 'No answer provided'}</p>
+          <span class="confidence-badge ${confidenceClass}">
+            Confidence: ${(data.confidence || 'medium').toUpperCase()}
+          </span>
+        </div>
+        ${data.metadata ? `
+          <details class="metadata">
+            <summary>View Technical Details</summary>
+            <div style="margin-top: 10px;">
+              <p><strong>Intent:</strong> ${data.metadata.intent || 'N/A'}</p>
+              ${data.metadata.shopifyql ? `
+                <p style="margin-top: 10px;"><strong>ShopifyQL Query:</strong></p>
+                <pre style="background: white; padding: 10px; border-radius: 5px; overflow-x: auto; margin-top: 5px;">${data.metadata.shopifyql}</pre>
+              ` : ''}
+            </div>
+          </details>
+        ` : ''}
+      `;
+
+      resultSection.classList.add('show');
+    }
+
+    function showError(message) {
+      const errorMessage = document.getElementById('errorMessage');
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+    }
+
+    // Check if we're returning from OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('shop') && urlParams.get('code')) {
+      // OAuth callback - show success message
+      const authSection = document.getElementById('authSection');
+      authSection.classList.add('connected');
+      document.getElementById('authStatus').innerHTML = `
+        <p style="color: #155724; font-weight: 600;">✅ Successfully connected to ${urlParams.get('shop')}</p>
+      `;
+      document.getElementById('storeId').value = urlParams.get('shop');
+    }
+  </script>
+</body>
+</html>
+

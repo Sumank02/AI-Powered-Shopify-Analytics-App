@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+    # Frontend Application
+    root to: "home#index"
+    get "/app", to: "home#index"
+  
     namespace :api do
       namespace :v1 do
   
